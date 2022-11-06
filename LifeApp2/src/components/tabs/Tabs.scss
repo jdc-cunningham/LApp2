@@ -1,0 +1,23 @@
+.app__tabs {
+  width: 100%;
+  display: flex;
+  align-items: flex;
+  justify-content: flex;
+  flex-direction: row;
+  border-bottom: 1px solid white;
+}
+
+.app__tabs-tab {
+  padding: 0.5rem;
+  
+  &.active {
+    background-color: white;
+    color: #202020;
+  }
+
+  &:hover {
+    background-color: white;
+    color: #202020;
+    cursor: pointer;
+  }
+}
