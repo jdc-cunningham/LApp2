@@ -1,9 +1,8 @@
-import { useState } from "react";
-import { invoke } from "@tauri-apps/api/tauri";
+import { useState, useEffect } from "react";
 import "./styles/css-reset.css";
 import "./App.css";
 import AppTabs from "./components/tabs/Tabs";
-import { useEffect } from "react";
+import NotesApp from "./apps/notes/NotesApp";
 
 const App = () => {
   // shouldn't be here
@@ -14,6 +13,8 @@ const App = () => {
 
   const [activeApp, setActiveApp] = useState(apps.Notes); // use enums
 
+  const activeAppBody = <NotesApp/>;
+
   useEffect(() => {
     console.log('app render');
   });
@@ -21,6 +22,7 @@ const App = () => {
   return (
     <div className="container">
       <AppTabs apps={apps} activeApp={activeApp} setActiveApp={setActiveApp}/>
+      {activeAppBody}
     </div>
   );
 }
