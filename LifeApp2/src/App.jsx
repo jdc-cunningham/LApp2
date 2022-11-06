@@ -22,7 +22,9 @@ const App = () => {
   return (
     <div className="container">
       <AppTabs apps={apps} activeApp={activeApp} setActiveApp={setActiveApp}/>
-      {activeAppBody}
+      <div className="container__active-app">
+        {activeAppBody}
+      </div>
     </div>
   );
 }

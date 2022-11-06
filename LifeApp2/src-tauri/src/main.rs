@@ -5,7 +5,6 @@
 
 // https://docs.rs/sqlite/latest/sqlite/
 // https://stackoverflow.com/questions/19605132/is-it-possible-to-use-global-variables-in-rust
-// static mut DB: Option<sqlite::Connection> = None;
 
 use std::io::Write;
 
@@ -16,23 +15,29 @@ fn log(msg: &str) {
 }
 
 // unwrap https://stackoverflow.com/questions/21257686/what-is-this-unwrap-thing-sometimes-its-unwrap-sometimes-its-unwrap-or
+// https://stackoverflow.com/a/5097712/2710227
 fn start_db() {
-	// unsafe {
-		// DB = Some(sqlite::open(":memory:").unwrap()); // unwrap ensures ok value
-	// }
+	// going to do it this way, easier for me
+	// apparently better to close it
+	let connection = sqlite::open(":memory:").unwrap();
 
-	let DB = sqlite::open(":memory:").unwrap();
-
-	DB
+	connection
     .execute(
-			"CREATE TABLE notes (
+			"
+			CREATE TABLE notes (
 				id INTEGER primary key autoincrement,
 				name TEXT,
 				body TEXT,
 				tags TEXT,
 				created_at TIMESTAMP CURRENT_TIMESTAMP,
 				updated_at TIMESTAMP CURRENT_TIMESTAMP
-			);",
+			);
+			CREATE TABLE tags (
+				id INTEGER primary key autoincrement,
+				name TEXT,
+				created_at TIMESTAMP CURRENT_TIMESTAMP
+			);
+			",
     )
     .unwrap();
 }
