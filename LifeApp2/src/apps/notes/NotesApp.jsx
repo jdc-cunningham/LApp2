@@ -14,7 +14,7 @@ const NotesApp = (props) => {
   useEffect(() => {
     if (searchTerm) {
       // hit rust/sqlite
-      search(searchTerm);
+      // search(searchTerm);
     }
   }, [searchTerm]);
 
@@ -27,6 +27,7 @@ const NotesApp = (props) => {
           placeholder="search notes"
           onChange={(e) => setSearchTerm(e.target.value)}
         />
+        <h2>recent notes</h2>
       </div>
       <div className="notes__app-body"></div>
     </div>
