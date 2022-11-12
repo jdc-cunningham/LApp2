@@ -1,6 +1,7 @@
 ### Functionality
 - timed entries after modification eg. after 5 minutes, start new row
 - split vs. tab view
+- global search (across different tabs? or just string/body content search)
 
 ### Visuals
 

@@ -1,4 +1,8 @@
 .notes__app {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: row;
   height: 100%;
 }
 
@@ -37,5 +41,20 @@
 
   h2 {
     margin-top: 1rem;
+  }
+}
+
+.notes__app-sidebar-search-results {
+  display: block;
+  width: 100%;
+}
+
+.notes__app-sidebar-search-result {
+  width: 100%;
+  cursor: pointer;
+  padding: 0.25rem;
+
+  &:hover {
+    background-color: #505050;
   }
 }
