@@ -19,32 +19,56 @@ fn log(msg: &str) {
 fn start_db() {
 	// going to do it this way, easier for me
 	// apparently better to close it
-	let connection = sqlite::open(":memory:").unwrap();
+	// https://stackoverflow.com/a/62994222/2710227
+	let connection = sqlite::open("file.db").unwrap();
 
-	connection
-    .execute(
-			"
-			CREATE TABLE notes (
-				id INTEGER primary key autoincrement,
-				name TEXT,
-				body TEXT,
-				tags TEXT,
-				created_at TIMESTAMP CURRENT_TIMESTAMP,
-				updated_at TIMESTAMP CURRENT_TIMESTAMP
-			);
-			CREATE TABLE tags (
-				id INTEGER primary key autoincrement,
-				name TEXT,
-				created_at TIMESTAMP CURRENT_TIMESTAMP
-			);
-			",
-    )
-    .unwrap();
+	let query = "
+		DROP TABLE notes;
+		DROP TABLE tags;
+		CREATE TABLE notes (
+			id INTEGER primary key autoincrement,
+			name TEXT,
+			body TEXT,
+			tags TEXT,
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+		);
+		INSERT INTO notes (name, body, tags) VALUES ('test', 'test', '[]');
+		CREATE TABLE tags (
+			id INTEGER primary key autoincrement,
+			name TEXT,
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+		);
+	";
+
+	connection.execute(query).unwrap();
 }
 
 #[tauri::command]
 fn search(search_term: &str) {
-	log(search_term);
+	// use sqlite::State;
+
+	let connection = sqlite::open("file.db").unwrap();
+	let query = "SELECT name FROM notes WHERE name LIKE ?";
+
+	// concatenate string, jeez why is this so hard
+	// https://stackoverflow.com/a/30154791/2710227
+	// https://maxuuell.com/blog/how-to-concatenate-strings-in-rust
+
+	let wildcard = "%".to_string();
+	let lwcd_search_term = String::from(search_term.to_owned() + &wildcard);
+
+	for row in connection
+    .prepare(query)
+    .unwrap()
+    .into_iter()
+    .bind((1, lwcd_search_term))
+    .unwrap()
+    .map(|row| row.unwrap())
+	{
+		// (row.read::<&str, _>("name"));
+			// println!("body = {}", row.read::<&str, _>("body"));
+	}
 }
 
 fn main() {

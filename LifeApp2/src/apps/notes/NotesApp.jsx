@@ -44,12 +44,13 @@ const NotesApp = (props) => {
 
   useEffect(() => {
     if (searchTerm) {
-      setSearchResults([
-        {id: 1, name: "apple", body: "body 1"},
-        {id: 2, name: "atmosphere", body: "body 2"}
-      ])
+      // setSearchResults([
+      //   {id: 1, name: "apple", body: "body 1"},
+      //   {id: 2, name: "atmosphere", body: "body 2"}
+      // ]);
+
       // hit rust/sqlite
-      // search(searchTerm);
+      search(searchTerm);
     } else {
       setSearchResults([]);
     }
