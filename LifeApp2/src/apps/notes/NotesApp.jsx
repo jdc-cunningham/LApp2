@@ -14,14 +14,28 @@ const NotesApp = (props) => {
   }
 
   const updateNote = (noteId, noteName, noteBody) => {
-    setOpenedNotes(prevState => ([
-      ...prevState.filter(note => note.id !== noteId),
-      {
+    const noteIndex = openedNotes.findIndex(note => note.id === noteId);
+
+    setOpenedNotes(prevState => {
+      const notes = [...prevState];
+
+      notes[noteIndex] = {
         id: noteId,
         name: noteName,
         body: noteBody
-      },
-    ]));
+      };
+
+      return notes;
+    });
+  }
+
+  const openNote = (noteId, note) => {
+    if (!(openedNotes.find(note => note.id === noteId))) {
+      setOpenedNotes(prevState => ([
+        ...prevState,
+        note,
+      ]));
+    }
   }
 
   useEffect(() => {
@@ -55,10 +69,7 @@ const NotesApp = (props) => {
             <div
               key={searchResult.id}
               className="notes__app-sidebar-search-result"
-              onClick={() => setOpenedNotes(prevState => ([
-                ...prevState,
-                searchResult,
-              ]))}
+              onClick={() => openNote(searchResult.id, searchResult)}
             >
               {searchResult.name}  
             </div>
@@ -77,7 +88,7 @@ const NotesApp = (props) => {
         ))}
       </div>
     </div>
-  )
+  );
 }
 
 export default NotesApp;
