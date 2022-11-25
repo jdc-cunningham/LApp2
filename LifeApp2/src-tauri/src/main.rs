@@ -61,9 +61,6 @@ fn search(search_term: &str) {
     .unwrap()
     .bind(1, search_term)
     .unwrap();
-		
-
-	log(rows);
 
 	// for row in connection
   //   .prepare(query)
