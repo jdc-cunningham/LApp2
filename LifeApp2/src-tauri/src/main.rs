@@ -4,19 +4,24 @@
 )]
 
 // https://stackoverflow.com/questions/19605132/is-it-possible-to-use-global-variables-in-rust
+// https://diesel.rs/guides/getting-started.html
+// https://stackoverflow.com/questions/58296263/how-do-i-create-a-new-database-using-diesel
 
 use std::io::Write;
-use rusqlite::{Connection, Result};
+// use rusqlite::{Connection, Result};
 // use chrono::{DateTime, Utc}
+use diesel::sqlite::SqliteConnection;
+use diesel::prelude::*;
+use dotenvy::dotenv;
+use std::envy;
 
-#[derive(Debug)]
-// struct Note {
-// 	id: i32,
-// 	name: String,
-// 	body: String,
-// 	created_at: DateTime<Utc>,
-// 	updated_at: DateTime<Utc>,
-// }
+pub fn establish_connection() -> SqliteConnection {
+	dotenv().ok();
+
+	let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+	SqliteConnection::establish(&database_url)
+		.unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
+}
 
 // https://stackoverflow.com/a/41688369/2710227
 // https://stackoverflow.com/a/27588417/2710227
