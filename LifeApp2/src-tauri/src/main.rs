@@ -3,10 +3,20 @@
 	windows_subsystem = "windows"
 )]
 
-// https://docs.rs/sqlite/latest/sqlite/
 // https://stackoverflow.com/questions/19605132/is-it-possible-to-use-global-variables-in-rust
 
 use std::io::Write;
+use rusqlite::{Connection, Result};
+// use chrono::{DateTime, Utc}
+
+#[derive(Debug)]
+// struct Note {
+// 	id: i32,
+// 	name: String,
+// 	body: String,
+// 	created_at: DateTime<Utc>,
+// 	updated_at: DateTime<Utc>,
+// }
 
 // https://stackoverflow.com/a/41688369/2710227
 // https://stackoverflow.com/a/27588417/2710227
@@ -14,13 +24,8 @@ fn log(msg: &str) {
 	std::io::stderr().write(format!("{}\n", msg).as_bytes()).ok(); // msg
 }
 
-// unwrap https://stackoverflow.com/questions/21257686/what-is-this-unwrap-thing-sometimes-its-unwrap-sometimes-its-unwrap-or
-// https://stackoverflow.com/a/5097712/2710227
 fn start_db() {
-	// going to do it this way, easier for me
-	// apparently better to close it
-	// https://stackoverflow.com/a/62994222/2710227
-	let connection = sqlite::open("file.db").unwrap();
+	let connection = Connection::open("file.db");
 
 	let query = "
 		DROP TABLE notes;
@@ -41,7 +46,11 @@ fn start_db() {
 		);
 	";
 
-	connection.execute(query).unwrap();
+	connection
+		.execute(
+			query,
+			(),
+		);
 }
 
 // concatenate string, jeez why is this so hard
@@ -49,43 +58,14 @@ fn start_db() {
 // https://maxuuell.com/blog/how-to-concatenate-strings-in-rust
 #[tauri::command]
 fn search(search_term: &str) {
-	use sqlite::State;
-	let connection = sqlite::open("file.db").unwrap();
+	let connection = Connection::open("file.db");
 	let query = "SELECT name FROM notes WHERE name LIKE ?";
 
 	let wildcard_start = "%".to_string();
 	let wildcard_end = "%".to_string();
 	let wcd_search_term = String::from(wildcard_start + search_term + &wildcard_end);
 
-	// let rows = connection
-  //   .prepare(query)
-  //   .unwrap()
-  //   .bind(1, search_term)
-  //   .unwrap();
 
-	// for row in connection
-  //   .prepare(query)
-  //   .unwrap()
-  //   .into_iter()
-  //   .bind((1, wcd_search_term))
-  //   .unwrap()
-  //   .map(|row| row.unwrap())
-	// {
-	// 	// (row.read::<&str, _>("name"));
-	// 		// println!("body = {}", row.read::<&str, _>("body"));
-	// }
-
-	let mut statement = connection.prepare(query).unwrap();
-	statement.bind((1, wcd_search_term.as_str())).unwrap();
-	statement.into_iter().map(|row| row.unwrap());
-
-	// while let Ok(State::Row) = statement.next() {
-  //   println!("name = {}", statement.read::<String, _>("name").unwrap());
-	// }
-
-	for row in statement {
-		println!("name = {}", row.expect("result").read::<&str, _>("name"));
-	}
 }
 
 fn main() {
