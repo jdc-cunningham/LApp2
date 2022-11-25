@@ -56,11 +56,11 @@ fn search(search_term: &str) {
 	let wildcard_end = "%".to_string();
 	let wcd_search_term = String::from(wildcard_start + search_term + &wildcard_end);
 
-	let rows = connection
-    .prepare(query)
-    .unwrap()
-    .bind(1, search_term)
-    .unwrap();
+	// let rows = connection
+  //   .prepare(query)
+  //   .unwrap()
+  //   .bind(1, search_term)
+  //   .unwrap();
 
 	// for row in connection
   //   .prepare(query)
@@ -73,6 +73,10 @@ fn search(search_term: &str) {
 	// 	// (row.read::<&str, _>("name"));
 	// 		// println!("body = {}", row.read::<&str, _>("body"));
 	// }
+
+	let mut statement = connection.prepare(query).unwrap();
+	statement.bind((1, wcd_search_term)).unwrap();
+	statement.into_iter().map(|row| row.unwrap());
 }
 
 fn main() {
