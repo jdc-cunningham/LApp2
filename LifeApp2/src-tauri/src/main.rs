@@ -49,6 +49,7 @@ fn start_db() {
 // https://maxuuell.com/blog/how-to-concatenate-strings-in-rust
 #[tauri::command]
 fn search(search_term: &str) {
+	use sqlite::State;
 	let connection = sqlite::open("file.db").unwrap();
 	let query = "SELECT name FROM notes WHERE name LIKE ?";
 
@@ -75,8 +76,16 @@ fn search(search_term: &str) {
 	// }
 
 	let mut statement = connection.prepare(query).unwrap();
-	statement.bind((1, wcd_search_term)).unwrap();
+	statement.bind((1, wcd_search_term.as_str())).unwrap();
 	statement.into_iter().map(|row| row.unwrap());
+
+	// while let Ok(State::Row) = statement.next() {
+  //   println!("name = {}", statement.read::<String, _>("name").unwrap());
+	// }
+
+	for row in statement {
+		println!("name = {}", row.expect("result").read::<&str, _>("name"));
+	}
 }
 
 fn main() {
